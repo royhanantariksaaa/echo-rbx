@@ -1,26 +1,95 @@
 --!optimize 2
 --!strict
 
---[[
-	Echo
+--[=[
+	@module Echo
+	@within Echo
+
 	A lean, extremely fast, pure-Luau signal implementation.
 	Utilizes a doubly-linked list for O(1) connection/disconnection
 	and thread pooling for zero-yield instant execution.
 
 	Based on fast-signal patterns.
-]]
 
+	The public API is a single factory:
+
+	```lua
+	local Echo = require(ReplicatedStorage.Libraries.Echo)
+	local signal = Echo.new()  -- returns an Echo.Signal
+	```
+
+	Methods are lowercase (`:connect`, `:fire`, ...). PascalCase aliases exist
+	internally but are not exposed through the public export.
+]=]
+
+--[=[
+	@class Connection
+
+	A handle to an active signal subscription, returned by `Signal:connect`
+	and `Signal:once`. Holds a `connected` flag and a `:disconnect()` method.
+]=]
 export type Connection<T... = ...any> = {
-	disconnect: (self: Connection<T...>) -> (),
+	--[=[
+		Whether this connection is still active. Becomes `false` after
+		`:disconnect()` (or auto-disconnect from `:once`).
+	]=]
 	connected: boolean,
+	--[=[
+		Sever this subscription. Safe to call more than once. The handler
+		will not be invoked again after this returns.
+	]=]
+	disconnect: (self: Connection<T...>) -> (),
 }
 
+--[=[
+	@class Signal
+	@within Echo
+
+	A pub/sub signal. Instances are created via `Echo.new()`. Handlers are
+	invoked with the variadic arguments passed to `:fire`.
+]=]
 export type Signal<T... = ...any> = {
+	--[=[
+		Subscribe a handler invoked on every `:fire`. The handler receives
+		whatever arguments are passed to `:fire`.
+
+		@param fn (...: T...) -> () -- handler called on each fire
+		@return Connection -- disconnect with `:disconnect()` to stop receiving
+	]=]
 	connect: (self: Signal<T...>, fn: (T...) -> ()) -> Connection<T...>,
+	--[=[
+		Subscribe a handler that auto-disconnects after its first invocation.
+
+		@param fn (...: T...) -> () -- handler called exactly once
+		@return Connection -- already-disconnected after the first fire
+	]=]
 	once: (self: Signal<T...>, fn: (T...) -> ()) -> Connection<T...>,
+	--[=[
+		Yield the calling thread until the next `:fire`.
+
+		@return ...: T... -- the arguments passed to the fire that resumed this thread
+	]=]
 	wait: (self: Signal<T...>) -> T...,
+	--[=[
+		Dispatch arguments to every connected handler.
+
+		Handlers run asynchronously on pooled threads via `task.spawn`: `:fire`
+		does not yield, and an error inside one handler does not propagate to
+		the caller or interrupt the other handlers. Note the pool reuses a
+		single runner thread, so a handler that re-enters `:fire` on the same
+		signal will reuse that thread mid-call.
+
+		@param ... T... -- values forwarded to every connected handler
+	]=]
 	fire: (self: Signal<T...>, T...) -> (),
+	--[=[
+		Disconnect every active handler. The signal itself remains usable.
+	]=]
 	disconnectAll: (self: Signal<T...>) -> (),
+	--[=[
+		Equivalent to `:disconnectAll()`. Provided for symmetry with the
+		`destroy` lifecycle convention. The signal should not be used afterward.
+	]=]
 	destroy: (self: Signal<T...>) -> (),
 }
 
@@ -81,7 +150,7 @@ end
 local Signal = {}
 Signal.__index = Signal
 
---[[ Constructs a new Echo. ]]
+--[[ Constructs a new Echo Signal. Public entry point: `Echo.new()`. ]]
 function Signal.new<T...>(): Signal<T...>
 	return setmetatable({
 		_head = nil,
@@ -138,7 +207,7 @@ function Signal:once(fn: (...any) -> ())
 	return connection
 end
 
---[[ Yields the current thread until the signal is fired. ]]
+--[[ Yields the current thread until the next fire; returns the fire arguments. ]]
 function Signal:wait()
 	local thread = coroutine.running()
 	self:once(function(...)
@@ -147,7 +216,7 @@ function Signal:wait()
 	return coroutine.yield()
 end
 
---[[ Dispatches the signal to all connected handlers. ]]
+--[[ Dispatches to all handlers. Each runs on a pooled task.spawn thread: non-yielding, error-isolated. ]]
 function Signal:fire(...)
 	local item = self._head
 	while item do
@@ -184,7 +253,7 @@ function Signal:disconnectAll()
 	selfAny._tail = nil
 end
 
---[[ Destroys the signal. ]]
+--[[ Destroys the signal. Equivalent to :disconnectAll(); do not use afterward. ]]
 function Signal:destroy()
 	self:disconnectAll()
 end
