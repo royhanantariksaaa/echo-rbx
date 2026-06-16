@@ -1,0 +1,13 @@
+{
+  "name": "Echo",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Libraries": {
+        "Echo": {
+          "$path": "."
+        }
+      }
+    }
+  }
+}
