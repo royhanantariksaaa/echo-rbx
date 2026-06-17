@@ -114,7 +114,7 @@ end
 local Connection = {}
 Connection.__index = Connection
 
---[[ Disconnect the connection from the signal. ]]
+--[=[ Disconnect the connection from the signal. ]=]
 function Connection:disconnect()
 	if not self.connected then return end
 	self.connected = false
@@ -150,7 +150,7 @@ end
 local Signal = {}
 Signal.__index = Signal
 
---[[ Constructs a new Echo Signal. Public entry point: `Echo.new()`. ]]
+--[=[ Constructs a new Echo Signal. Public entry point: `Echo.new()`. ]=]
 function Signal.new<T...>(): Signal<T...>
 	return setmetatable({
 		_head = nil,
@@ -158,7 +158,7 @@ function Signal.new<T...>(): Signal<T...>
 	}, Signal) :: any
 end
 
---[[ Connects a handler function to this signal. ]]
+--[=[ Connects a handler function to this signal. ]=]
 function Signal:connect(fn: (...any) -> ())
 	local connection
 	if freeConnection then
@@ -194,7 +194,7 @@ function Signal:connect(fn: (...any) -> ())
 	return connection
 end
 
---[[ Connects a handler function that auto-disconnects after the first fire. ]]
+--[=[ Connects a handler function that auto-disconnects after the first fire. ]=]
 function Signal:once(fn: (...any) -> ())
 	local connection
 	local done = false
@@ -207,7 +207,7 @@ function Signal:once(fn: (...any) -> ())
 	return connection
 end
 
---[[ Yields the current thread until the next fire; returns the fire arguments. ]]
+--[=[ Yields the current thread until the next fire; returns the fire arguments. ]=]
 function Signal:wait()
 	local thread = coroutine.running()
 	self:once(function(...)
@@ -216,7 +216,7 @@ function Signal:wait()
 	return coroutine.yield()
 end
 
---[[ Dispatches to all handlers. Each runs on a pooled task.spawn thread: non-yielding, error-isolated. ]]
+--[=[ Dispatches to all handlers. Each runs on a pooled task.spawn thread: non-yielding, error-isolated. ]=]
 function Signal:fire(...)
 	local item = self._head
 	while item do
@@ -231,7 +231,7 @@ function Signal:fire(...)
 	end
 end
 
---[[ Disconnects all current connections. ]]
+--[=[ Disconnects all current connections. ]=]
 function Signal:disconnectAll()
 	local item = self._head
 	while item do
@@ -253,7 +253,7 @@ function Signal:disconnectAll()
 	selfAny._tail = nil
 end
 
---[[ Destroys the signal. Equivalent to :disconnectAll(); do not use afterward. ]]
+--[=[ Destroys the signal. Equivalent to :disconnectAll(); do not use afterward. ]=]
 function Signal:destroy()
 	self:disconnectAll()
 end
