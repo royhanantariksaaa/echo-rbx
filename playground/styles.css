@@ -278,7 +278,7 @@ button:disabled {
   color: var(--success);
 }
 
-.runtime-state[data-state="destroyed"] {
+.runtime-state[data-state="error"] {
   border-color: var(--danger);
   color: var(--danger);
 }
