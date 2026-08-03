@@ -1,0 +1,66 @@
+:root {
+  --ifm-color-primary: #0f766e;
+  --ifm-color-primary-dark: #0d6b63;
+  --ifm-color-primary-darker: #0c655e;
+  --ifm-color-primary-darkest: #0a534d;
+  --ifm-color-primary-light: #118177;
+  --ifm-color-primary-lighter: #12877c;
+  --ifm-color-primary-lightest: #15998d;
+  --ifm-font-family-base: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ifm-code-font-size: 92%;
+  --ifm-global-radius: 6px;
+  --echo-accent: #d97706;
+}
+
+[data-theme="dark"] {
+  --ifm-color-primary: #5eead4;
+  --ifm-color-primary-dark: #3ee5cd;
+  --ifm-color-primary-darker: #2ee2c9;
+  --ifm-color-primary-darkest: #1bc3ad;
+  --ifm-color-primary-light: #7eefe0;
+  --ifm-background-color: #121918;
+  --ifm-background-surface-color: #192321;
+  --echo-accent: #fbbf24;
+}
+
+.navbar {
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ifm-color-emphasis-300) 75%, transparent);
+}
+
+.hero {
+  background: var(--ifm-background-color);
+  border-bottom: 4px solid var(--echo-accent);
+  color: var(--ifm-font-color-base);
+}
+
+.hero .container::before {
+  background: url("../../static/mark.png") center / cover no-repeat;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 6px;
+  content: "";
+  display: block;
+  height: 88px;
+  margin: 0 auto 16px;
+  width: 88px;
+}
+
+.card,
+.alert,
+.theme-code-block {
+  border-radius: 6px;
+}
+
+.theme-doc-sidebar-container {
+  border-right-color: var(--ifm-color-emphasis-200) !important;
+}
+
+code {
+  border-radius: 4px;
+}
+
+@media (max-width: 576px) {
+  .hero .container::before {
+    height: 72px;
+    width: 72px;
+  }
+}

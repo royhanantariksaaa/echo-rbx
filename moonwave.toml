@@ -1,0 +1,53 @@
+title = "Echo"
+gitRepoUrl = "https://github.com/royhanantariksaaa/echo-rbx"
+gitSourceBranch = "main"
+changelog = false
+classOrder = ["Echo", "Signal", "Connection"]
+
+[home]
+enabled = true
+includeReadme = false
+
+[docusaurus]
+organizationName = "royhanantariksaaa"
+projectName = "echo-rbx"
+url = "https://royhanantariksaaa.github.io"
+baseUrl = "/echo-rbx/"
+tagline = "Small signals. Predictable lifecycles."
+favicon = "/mark.png"
+onBrokenLinks = "warn"
+onBrokenMarkdownLinks = "warn"
+
+[[navbar.items]]
+href = "https://royhanantariksaaa.github.io/weave-rbx/"
+label = "Weave"
+position = "right"
+
+[[navbar.items]]
+href = "https://royhanantariksaaa.github.io/weavekit-rbx/"
+label = "WeaveKit"
+position = "right"
+
+[[navbar.items]]
+href = "https://royhanantariksaaa.github.io/flite-rbx/"
+label = "Flite"
+position = "right"
+
+[footer]
+style = "dark"
+copyright = "Echo documentation. Built with Moonwave and Docusaurus."
+
+[[footer.links]]
+title = "Libraries"
+
+[[footer.links.items]]
+label = "Weave"
+href = "https://royhanantariksaaa.github.io/weave-rbx/"
+
+[[footer.links.items]]
+label = "WeaveKit"
+href = "https://royhanantariksaaa.github.io/weavekit-rbx/"
+
+[[footer.links.items]]
+label = "Flite"
+href = "https://royhanantariksaaa.github.io/flite-rbx/"

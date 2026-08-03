@@ -4,8 +4,9 @@
     "$className": "DataModel",
     "ReplicatedStorage": {
       "Libraries": {
+        "$className": "Folder",
         "Echo": {
-          "$path": "."
+          "$path": "src"
         }
       }
     }

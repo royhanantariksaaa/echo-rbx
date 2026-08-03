@@ -19,8 +19,8 @@
 	local signal = Echo.new()  -- returns an Echo.Signal
 	```
 
-	Methods are lowercase (`:connect`, `:fire`, ...). PascalCase aliases exist
-	internally but are not exposed through the public export.
+	Lowercase methods (`:connect`, `:fire`, ...) are primary. PascalCase aliases
+	are exposed on signal and connection instances for compatibility.
 ]=]
 
 --[=[
@@ -40,6 +40,7 @@ export type Connection<T... = ...any> = {
 		will not be invoked again after this returns.
 	]=]
 	disconnect: (self: Connection<T...>) -> (),
+	Disconnect: (self: Connection<T...>) -> (),
 }
 
 --[=[
@@ -76,9 +77,8 @@ export type Signal<T... = ...any> = {
 
 		Handlers run asynchronously on pooled threads via `task.spawn`: `:fire`
 		does not yield, and an error inside one handler does not propagate to
-		the caller or interrupt the other handlers. Note the pool reuses a
-		single runner thread, so a handler that re-enters `:fire` on the same
-		signal will reuse that thread mid-call.
+		the caller or interrupt the other handlers. A runner is removed from the
+		pool while executing, so re-entrant fires acquire a different runner.
 
 		@param ... T... -- values forwarded to every connected handler
 	]=]
@@ -92,10 +92,17 @@ export type Signal<T... = ...any> = {
 		`destroy` lifecycle convention. The signal should not be used afterward.
 	]=]
 	destroy: (self: Signal<T...>) -> (),
+
+	-- PascalCase compatibility aliases.
+	Connect: (self: Signal<T...>, fn: (T...) -> ()) -> Connection<T...>,
+	Once: (self: Signal<T...>, fn: (T...) -> ()) -> Connection<T...>,
+	Wait: (self: Signal<T...>) -> T...,
+	Fire: (self: Signal<T...>, T...) -> (),
+	DisconnectAll: (self: Signal<T...>) -> (),
+	Destroy: (self: Signal<T...>) -> (),
 }
 
 local freeRunnerThread: thread? = nil
-local freeConnection: any = nil
 
 local function acquireRunnerThreadAndCallEventHandler(fn: (...any) -> (), ...)
 	local acquiredRunnerThread = freeRunnerThread
@@ -143,9 +150,7 @@ function Connection:disconnect()
 	self._fn = nil
 	self._prev = nil
 	
-	-- Connection pooling
-	self._next = freeConnection
-	freeConnection = self
+	self._next = nil
 end
 
 local Signal = {}
@@ -161,26 +166,13 @@ end
 
 --[=[ Connects a handler function to this signal. ]=]
 function Signal:connect(fn: (...any) -> ())
-	local connection
-	if freeConnection then
-		connection = freeConnection
-		freeConnection = connection._next
-		
-		connection.connected = true
-		connection._signal = self
-		connection._fn = fn
-		connection._prev = nil
-		connection._next = nil
-		setmetatable(connection, Connection)
-	else
-		connection = setmetatable({
-			connected = true,
-			_signal = self,
-			_fn = fn,
-			_prev = nil,
-			_next = nil,
-		}, Connection)
-	end
+	local connection = setmetatable({
+		connected = true,
+		_signal = self,
+		_fn = fn,
+		_prev = nil,
+		_next = nil,
+	}, Connection)
 
 	-- Append to tail
 	if self._tail then
@@ -243,9 +235,7 @@ function Signal:disconnectAll()
 		itemAny._signal = nil
 		itemAny._fn = nil
 		itemAny._prev = nil
-		
-		itemAny._next = freeConnection :: any
-		freeConnection = item :: any
+		itemAny._next = nil
 		
 		item = nextItem
 	end
