@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Echo Signal Playground</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <header class="appbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">E</span>
+      <div>
+        <strong>Echo Playground</strong>
+        <span>Signal lifecycle model</span>
+      </div>
+    </div>
+    <div class="appbar-actions">
+      <span class="model-badge">Browser model</span>
+      <a href="../docs/tutorial-score-feed/" target="_top">Open tutorial</a>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section class="editor-panel" aria-labelledby="scenario-heading">
+      <div class="panel-heading">
+        <div>
+          <span class="eyebrow">Editable scenario</span>
+          <h1 id="scenario-heading">Signal script</h1>
+        </div>
+        <label class="example-picker">
+          <span>Example</span>
+          <select id="examplePicker">
+            <option value="lifecycle">Listener lifecycle</option>
+            <option value="once">One-shot listener</option>
+            <option value="teardown">Bulk teardown</option>
+          </select>
+        </label>
+      </div>
+
+      <textarea id="scriptEditor" aria-label="Echo scenario script" spellcheck="false"></textarea>
+
+      <div class="editor-actions">
+        <button class="primary" id="runButton" type="button">Run scenario</button>
+        <button class="secondary" id="resetButton" type="button">Reset</button>
+      </div>
+
+      <p class="editor-error" id="editorError" role="alert"></p>
+
+      <div class="syntax-strip" aria-label="Supported calls">
+        <span>Connect</span>
+        <span>Once</span>
+        <span>Fire</span>
+        <span>Disconnect</span>
+        <span>DisconnectAll</span>
+        <span>Destroy</span>
+      </div>
+
+      <p class="model-note">
+        Runs Echo lifecycle semantics in the browser. Roblox task scheduling is
+        demonstrated by the recorded Studio tutorial.
+      </p>
+    </section>
+
+    <section class="stage" aria-labelledby="stage-heading">
+      <div class="stage-heading">
+        <div>
+          <span class="eyebrow">Runtime view</span>
+          <h2 id="stage-heading">Signal bus</h2>
+        </div>
+        <span class="runtime-state" id="runtimeState">Ready</span>
+      </div>
+
+      <div class="metrics" aria-label="Scenario metrics">
+        <div class="metric">
+          <span>Fires</span>
+          <strong id="fireCount">0</strong>
+        </div>
+        <div class="metric">
+          <span>Deliveries</span>
+          <strong id="deliveryCount">0</strong>
+        </div>
+        <div class="metric">
+          <span>Active listeners</span>
+          <strong id="activeCount">0</strong>
+        </div>
+      </div>
+
+      <div class="bus" id="signalBus" aria-hidden="true">
+        <span class="bus-label">Echo.Signal&lt;number&gt;</span>
+        <span class="packet" id="packet"></span>
+      </div>
+
+      <div class="runtime-grid">
+        <section class="listeners" aria-labelledby="listeners-heading">
+          <div class="section-heading">
+            <h3 id="listeners-heading">Connections</h3>
+            <span id="connectionSummary">No listeners</span>
+          </div>
+          <div id="listenerList" class="listener-list" aria-live="polite"></div>
+        </section>
+
+        <section class="timeline-panel" aria-labelledby="timeline-heading">
+          <div class="section-heading">
+            <h3 id="timeline-heading">Dispatch trace</h3>
+            <span>Newest last</span>
+          </div>
+          <ol id="timeline" class="timeline" aria-live="polite"></ol>
+        </section>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

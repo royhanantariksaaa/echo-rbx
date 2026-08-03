@@ -19,6 +19,11 @@ onBrokenLinks = "warn"
 onBrokenMarkdownLinks = "warn"
 
 [[navbar.items]]
+to = "docs/playground"
+label = "Playground"
+position = "left"
+
+[[navbar.items]]
 href = "https://royhanantariksaaa.github.io/weave-rbx/"
 label = "Weave"
 position = "right"

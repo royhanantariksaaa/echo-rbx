@@ -16,6 +16,11 @@ listener disconnects while the signal remains live.
   <figcaption>Real Echo listeners receiving six score events in Roblox Studio.</figcaption>
 </figure>
 
+:::tip Experiment alongside the tutorial
+Open the [Echo Playground](./playground) to rearrange Fire, Disconnect, Once,
+and Destroy calls while the connection table and dispatch trace update.
+:::
+
 ## Before you start
 
 Echo has no runtime dependencies. Map the repository to
