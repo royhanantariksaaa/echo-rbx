@@ -47,3 +47,6 @@ local scored: ScoreSignal = Echo.new()
 ```
 
 The generic argument pack is shared by `connect`, `once`, `wait`, and `fire`.
+
+Continue with [Build a Score Feed](./tutorial-score-feed) for a complete
+Studio example with typed listeners, one-time events, and cleanup.

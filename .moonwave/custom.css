@@ -58,6 +58,42 @@ code {
   border-radius: 4px;
 }
 
+.tutorial-demo {
+  margin: 1.5rem 0 2rem;
+}
+
+.tutorial-demo img {
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 6px;
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--ifm-color-emphasis-900) 12%, transparent);
+  display: block;
+  height: auto;
+  object-fit: cover;
+  width: 100%;
+}
+
+.tutorial-demo__still {
+  display: none !important;
+}
+
+.tutorial-demo figcaption {
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.85rem;
+  margin-top: 0.55rem;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tutorial-demo__motion {
+    display: none !important;
+  }
+
+  .tutorial-demo__still {
+    display: block !important;
+  }
+}
+
 @media (max-width: 576px) {
   .hero .container::before {
     height: 72px;
