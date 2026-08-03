@@ -1070,6 +1070,137 @@ pre code {
   }
 }
 
+/* Page modes keep prose readable without forcing tools and references into it. */
+
+[class*="docItemContainer"]:has(.tutorial-demo:not(.intro-demo)),
+.theme-doc-markdown:has(.tutorial-demo:not(.intro-demo)) {
+  max-width: 54rem;
+}
+
+[class*="docItemContainer"]:has(.project-header),
+.theme-doc-markdown:has(.project-header) {
+  max-width: 60rem;
+}
+
+[class*="docItemContainer"]:has(.reference-switchboard),
+.theme-doc-markdown:has(.reference-switchboard) {
+  max-width: 60rem;
+}
+
+[class*="docItemContainer"]:has(article > [class*="member_"]) {
+  max-width: 64rem;
+}
+
+html:has(.playground-frame) {
+  --doc-sidebar-width: 15rem !important;
+}
+
+[class*="docMainContainer"]:has(.playground-frame) > .container {
+  max-width: none !important;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+[class*="docItemCol"]:has(.playground-frame),
+[class*="docItemContainer"]:has(.playground-frame),
+.theme-doc-markdown:has(.playground-frame) {
+  max-width: none !important;
+  width: 100%;
+}
+
+.theme-doc-markdown:has(.playground-frame) > :is(
+  h1,
+  h2,
+  h3,
+  p,
+  ul,
+  ol,
+  table,
+  .lesson-header,
+  .lesson-goals,
+  .playground-actions,
+  .alert,
+  .chapter-next,
+  .tutorial-demo,
+  .theme-code-block
+) {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 50rem;
+}
+
+.playground-runbook {
+  background: var(--handbook-border);
+  border: 1px solid var(--handbook-border);
+  border-radius: 4px;
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 1.25rem auto 1.5rem;
+  max-width: 64rem;
+  overflow: hidden;
+}
+
+.playground-runbook > div {
+  background: var(--handbook-canvas);
+  padding: 1rem;
+}
+
+.playground-runbook span {
+  color: var(--handbook-primary);
+  display: block;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.7rem;
+  font-weight: 800;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+}
+
+.playground-runbook strong {
+  color: var(--handbook-ink);
+  display: block;
+  font-size: 0.95rem;
+}
+
+.playground-runbook p {
+  color: var(--handbook-muted) !important;
+  font-size: 0.84rem;
+  line-height: 1.45 !important;
+  margin: 0.35rem 0 0;
+}
+
+.theme-doc-markdown:has(.playground-frame) .playground-frame {
+  box-shadow: none;
+  margin: 1.25rem auto 2.5rem;
+  max-width: 82rem;
+}
+
+@media (min-width: 1280px) {
+  .theme-doc-markdown:has(.playground-frame) .playground-frame iframe {
+    height: clamp(940px, calc(100vh - 1rem), 1000px);
+  }
+}
+
+@media (min-width: 997px) and (max-width: 1279px) {
+  .theme-doc-markdown:has(.playground-frame) .playground-frame iframe {
+    height: 1300px;
+  }
+}
+
+@media (max-width: 996px) {
+  .theme-doc-markdown:has(.playground-frame) .playground-frame iframe {
+    height: 1900px;
+  }
+
+  .theme-doc-markdown:has(.playground-frame) .playground-frame iframe[title^="WeaveKit"] {
+    height: 2450px;
+  }
+
+  .theme-doc-markdown:has(.playground-frame) .playground-frame iframe[title^="Flite"] {
+    height: 2050px;
+  }
+}
+
 @media (max-width: 768px) {
   .handbook-modes,
   .learning-path,
@@ -1260,6 +1391,8 @@ html {
 }
 
 .navbar {
+  backdrop-filter: none;
+  background: var(--handbook-canvas) !important;
   height: var(--ifm-navbar-height);
   min-height: var(--ifm-navbar-height);
   padding-bottom: 0.35rem;
@@ -1294,6 +1427,35 @@ html {
 
 .footer {
   border-top: 1px solid var(--handbook-border) !important;
+  padding: 1.5rem 0 1.1rem;
+}
+
+.footer__links {
+  margin-bottom: 0.75rem;
+}
+
+.footer__title {
+  font-size: 0.78rem;
+  margin-bottom: 0.45rem;
+}
+
+.footer__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+}
+
+.footer__item {
+  margin: 0;
+}
+
+.footer__link-item,
+.footer__copyright {
+  font-size: 0.8rem;
+}
+
+.footer__bottom {
+  margin-top: 0.4rem;
 }
 
 .button {
@@ -1375,7 +1537,7 @@ html {
 .theme-doc-markdown {
   font-size: 1rem;
   line-height: 1.55;
-  max-width: 40rem;
+  max-width: 44rem;
 }
 
 article h1,
@@ -1678,11 +1840,13 @@ article h3,
   }
 
   [class*="docItemCol"] {
-    max-width: 42rem;
+    max-width: none;
   }
 
   [class*="docItemContainer"] {
-    max-width: 40rem;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 46rem;
   }
 }
 
@@ -1709,6 +1873,10 @@ article h3,
   .handbook-project-band,
   .handbook-reference-band,
   .chapter-next {
+    grid-template-columns: 1fr;
+  }
+
+  .playground-runbook {
     grid-template-columns: 1fr;
   }
 }
