@@ -134,5 +134,5 @@ multiplayer acceptance pass, and failure paths.
 
 <div className="chapter-next">
   <p><strong>Ready for production-shaped composition?</strong><br />Use Echo as the typed event layer between Crystal Run's network model and client features.</p>
-  <a href="./project-crystal-run">Build the event layer</a>
+  <a href="/echo-rbx/docs/project-crystal-run/">Build the event layer</a>
 </div>

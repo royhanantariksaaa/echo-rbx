@@ -143,5 +143,5 @@ multi-system client event layer.
 
 <div className="chapter-next">
   <p><strong>Continue into the complete game.</strong><br />Bridge Flite round facts into typed HUD, feedback, analytics, and milestone subscribers.</p>
-  <a href="./project-crystal-run">Build Crystal Run's events</a>
+  <a href="/echo-rbx/docs/project-crystal-run/">Build Crystal Run's events</a>
 </div>
