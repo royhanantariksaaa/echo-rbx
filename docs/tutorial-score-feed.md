@@ -101,7 +101,8 @@ only for the first value, and analytics receives only the first four values.
    `Fire` cannot invoke the one-time listener twice.
 4. `Disconnect` removes only that connection. Other listeners and the signal
    remain valid.
-5. `Destroy` disconnects the remaining listeners and releases the signal.
+5. `Destroy` disconnects the remaining listeners. The owner then releases its
+   reference; Echo communicates terminal intent but does not enforce it.
 
 ## API checkpoints
 
@@ -113,7 +114,7 @@ only for the first value, and analytics receives only the first four values.
 | `signal:Fire(...)` | Dispatch arguments asynchronously to current listeners. |
 | `signal:Wait()` | Yield the current thread until the next fire. |
 | `signal:DisconnectAll()` | Remove every listener without destroying the signal. |
-| `signal:Destroy()` | Permanently release the signal and its listeners. |
+| `signal:Destroy()` | Clear listeners during final owner teardown; terminal use is conventional. |
 
 Lowercase methods such as `connect`, `fire`, and `destroy` are equivalent to
 their Roblox-style PascalCase aliases.

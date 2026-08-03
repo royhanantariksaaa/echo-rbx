@@ -1537,7 +1537,7 @@ html {
 .theme-doc-markdown {
   font-size: 1rem;
   line-height: 1.55;
-  max-width: 44rem;
+  max-width: 50rem;
 }
 
 article h1,
@@ -1834,6 +1834,7 @@ article h3,
 
 @media (min-width: 1200px) {
   [class*="docMainContainer"] > .container {
+    max-width: none;
     padding-left: 2rem;
     padding-right: 2rem;
     padding-top: 1.25rem !important;
@@ -1844,9 +1845,13 @@ article h3,
   }
 
   [class*="docItemContainer"] {
-    margin-left: auto;
+    margin-left: 2.5rem;
     margin-right: auto;
-    max-width: 46rem;
+    max-width: 52rem;
+  }
+
+  [class*="docItemContainer"]:has(.playground-frame) {
+    margin-left: 0;
   }
 }
 

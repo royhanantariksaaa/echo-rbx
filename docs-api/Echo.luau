@@ -3,14 +3,22 @@
 --[=[
 	@class Echo
 
-	Creates typed asynchronous signals with stable connection handles.
+	The root Echo module. Its only runtime export is `new`, which creates a
+	typed asynchronous Signal. `Signal` and `Connection` are exported Luau
+	types rather than runtime constructor tables.
+
+	Echo provides notification fan-out, not retained state, replay, network
+	transport, synchronous return aggregation, or automatic feature ownership.
 ]=]
 local Echo = {}
 
 --[=[
 	@class Connection
 
-	A stable handle returned by `Signal:connect` or `Signal:once`.
+	A stable public handle returned by `Signal:connect` or `Signal:once`.
+	Echo never recycles this object into a later subscription. Disconnecting it
+	clears references held by its linked-list node and cannot affect another
+	connection created afterward.
 ]=]
 local Connection = {}
 
@@ -19,11 +27,13 @@ local Connection = {}
 	@within Connection
 	@readonly
 
-	Whether this subscription is currently active.
+	Whether this subscription is currently active. It becomes `false` after an
+	individual disconnect, one-shot delivery, `Signal:disconnectAll`, or
+	`Signal:destroy`.
 ]=]
 Connection.connected = false
 
---- Disconnects the subscription. Repeated calls are safe.
+--- Disconnects this subscription in O(1). Repeated calls are safe.
 function Connection:disconnect() end
 
 --- PascalCase alias of `disconnect`.
@@ -32,12 +42,20 @@ function Connection:Disconnect() end
 --[=[
 	@class Signal
 
-	An ordered collection of asynchronous listeners.
+	An ordered linked collection of asynchronous listeners. Signals are created
+	with `Echo.new<T...>()`; the same type pack is used by subscriptions,
+	dispatch, and waiting.
+
+	`fire` traverses from the oldest connection to the newest and resumes each
+	connected callback through `task.spawn`. Traversal order is defined, but
+	callback completion order and return values are not part of the contract.
 ]=]
 local Signal = {}
 
 --[=[
-	Adds a persistent listener.
+	Appends a persistent listener and returns its stable ownership handle.
+	Retain the Connection whenever the subscriber may end before the Signal.
+
 	@param callback (...any) -> () -- Listener invoked for each fire.
 	@return Connection -- Stable subscription handle.
 ]=]
@@ -46,29 +64,48 @@ function Signal:connect(callback: (...any) -> ()): any
 end
 
 --[=[
-	Adds a listener that disconnects before its first invocation.
+	Appends a listener that disconnects before its first invocation. The
+	disconnect-before-callback order prevents nested fires from invoking the
+	one-shot listener twice.
+
 	@param callback (...any) -> () -- Listener invoked at most once.
-	@return Connection
+	@return Connection -- Can also be disconnected early to cancel delivery.
 ]=]
 function Signal:once(callback: (...any) -> ()): any
 	return nil
 end
 
 --[=[
-	Yields until the next dispatch and returns all fired arguments.
+	Yields the calling coroutine until the next dispatch and returns all fired
+	arguments. There is no built-in timeout. Clearing or destroying the Signal
+	disconnects the hidden one-shot subscription without resuming the waiter.
+
 	@yields
 ]=]
 function Signal:wait(): ...any
 	return
 end
 
---- Schedules all currently connected listeners without yielding the caller.
+--[=[
+	Traverses connected listeners and resumes callbacks through `task.spawn`.
+	The method does not explicitly yield, await completion, collect callback
+	returns, or clone table payloads. A callback may begin before `fire` returns.
+
+	@param ... any -- Values forwarded unchanged to each scheduled callback.
+]=]
 function Signal:fire(...: any) end
 
---- Disconnects every active listener while keeping the signal reusable.
+--[=[
+	Disconnects every active listener, updates each public handle, clears node
+	references, and leaves the Signal reusable for a new listener generation.
+]=]
 function Signal:disconnectAll() end
 
---- Lifecycle alias of `disconnectAll`.
+--[=[
+	Exact runtime alias of `disconnectAll`. Use it to communicate terminal owner
+	intent, but note that Echo does not enforce a destroyed state or reject later
+	connections and fires.
+]=]
 function Signal:destroy() end
 
 --- PascalCase alias of `connect`.
@@ -91,7 +128,12 @@ function Signal:Destroy() self:destroy() end
 
 --[=[
 	Creates an empty signal.
-	@return Signal
+
+	Use `local signal: Echo.Signal<T...> = Echo.new()` to define the shared
+	payload contract. The constructor accepts no options and performs no runtime
+	payload schema validation.
+
+	@return Signal -- Empty reusable signal.
 ]=]
 function Echo.new(): any
 	return nil

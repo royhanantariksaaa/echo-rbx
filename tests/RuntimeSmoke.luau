@@ -45,6 +45,30 @@ signal:fire(1)
 signal:fire(1)
 check(onceCount == 1, "once should invoke its handler exactly once")
 
+local reentrantSignal = Echo.new()
+local reentrantCount = 0
+reentrantSignal:once(function(value)
+	reentrantCount += 1
+	if value == 1 then
+		reentrantSignal:fire(2)
+	end
+end)
+reentrantSignal:fire(1)
+task.wait()
+check(reentrantCount == 1, "once should disconnect before a reentrant fire")
+reentrantSignal:destroy()
+
+local waitSignal = Echo.new()
+local waitedValue: number? = nil
+task.spawn(function()
+	waitedValue = waitSignal:wait()
+end)
+task.wait()
+waitSignal:fire(73)
+task.wait()
+check(waitedValue == 73, "wait should resume with the next fire arguments")
+waitSignal:destroy()
+
 local aliasCount = 0
 local aliasConnection = signal:Connect(function()
 	aliasCount += 1
@@ -68,6 +92,21 @@ signal:connect(function()
 end)
 signal:fire()
 check(reusableCount == 1, "a cleared signal should remain reusable")
+
+local terminalConnection = signal:connect(function()
+	reusableCount += 100
+end)
+signal:destroy()
+check(not terminalConnection.connected, "destroy should disconnect current handles")
+signal:fire()
+check(reusableCount == 1, "destroy should clear current listeners")
+
+local postDestroyCount = 0
+signal:connect(function()
+	postDestroyCount += 1
+end)
+signal:fire()
+check(postDestroyCount == 1, "destroy should remain an exact clearing alias at runtime")
 signal:destroy()
 
 print(`[Echo RuntimeSmoke] PASS ({checks} checks)`)

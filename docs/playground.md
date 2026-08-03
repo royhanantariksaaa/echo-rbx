@@ -41,7 +41,7 @@ changing the script.
     <li>HUD and Analytics are active before the first Fire.</li>
     <li>Once removes itself immediately after its first delivery.</li>
     <li>Analytics stops receiving values after its connection disconnects.</li>
-    <li>Destroy ends the signal and rejects later lifecycle operations.</li>
+    <li>Destroy clears current listeners but does not enforce terminal use.</li>
   </ul>
 </div>
 
@@ -56,7 +56,7 @@ trace produced by each line.
 | Once disappears after one delivery | It disconnects before invoking the callback. | Use it for one-time milestones and acknowledgements. |
 | Analytics stops while HUD continues | A connection owns only its subscription. | Disconnect a feature without disrupting the shared signal. |
 | DisconnectAll leaves the signal reusable | Listener lifetime is shorter than signal lifetime. | Clear a phase and attach the next phase later. |
-| Destroy rejects later work | Signal lifetime has ended permanently. | Destroy only when the owning feature is leaving. |
+| Destroy has the same runtime clearing behavior | Terminal lifetime is a convention, not a guard. | Call it only from the signal owner's final teardown. |
 
 ## Complete three controlled experiments
 
@@ -76,9 +76,12 @@ different lifetimes.
 
 ### 3. Separate clearing from destruction
 
-Select **Bulk teardown**. First run with `DisconnectAll`, then replace that
-line with `Destroy`. Clearing listeners leaves the signal available for new
-connections. Destroying it ends the object itself.
+Select **Bulk teardown**. The scenario reconnects after `DisconnectAll`, then
+adds a probe after `Destroy`. Both probes run because Echo implements
+`Destroy` as an exact clearing alias. The difference is architectural intent:
+`DisconnectAll` says "end this listener generation," while `Destroy` says
+"the owner is finished and no publisher should retain this signal." Echo does
+not enforce the second statement for you.
 
 ## Transfer the behavior to Roblox Studio
 
@@ -119,8 +122,9 @@ tree, complete script, expected `65` point result, API walkthrough, and common
 failure modes.
 
 :::note Browser model versus Roblox runtime
-The playground models documented connection and teardown behavior. Roblox task
-scheduling and real callback execution are shown in the recorded
+The playground mirrors Echo's connection and teardown state, including
+post-`Destroy` reuse. It serializes deliveries so the trace remains readable;
+Roblox task scheduling and real callback execution are shown in the recorded
 [Score Feed tutorial](./tutorial-score-feed).
 :::
 

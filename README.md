@@ -106,7 +106,8 @@ subscription.
 
 ## Dispatch Semantics
 
-- `fire` does not yield. Each handler runs through `task.spawn`.
+- `fire` does not explicitly yield or await completion. `task.spawn` may begin
+  a handler before `fire` returns.
 - Handler errors stay in the spawned task and do not propagate through
   `fire` or prevent other handlers from being scheduled.
 - Handlers are traversed in connection order, but asynchronous completion
@@ -168,18 +169,26 @@ preserves stable O(1) removals.
 local bus = Echo.new()
 
 Weave.mount(PlayerGui, function(scope)
+    local lastEvent = scope:Value("Waiting")
+    local connection = bus:connect(function(kind, timestamp)
+        lastEvent:Set(`{kind} at {timestamp}`)
+    end)
+
     scope:onCleanup(function()
-        bus:disconnectAll()
+        connection:disconnect()
     end)
 
     return scope:TextButton {
-        Text = "Emit",
+        Text = lastEvent,
         [Weave.OnEvent("Activated")] = function()
             bus:fire("button-pressed", os.clock())
         end,
     }
 end)
 ```
+
+The Weave scope owns only its connection. The module that created `bus` owns
+final signal teardown, so unmounting this UI does not clear other subscribers.
 
 ### Flite signals
 

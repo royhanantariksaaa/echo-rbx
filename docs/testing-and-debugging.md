@@ -36,7 +36,7 @@ from the smallest contract outward so a failure identifies one boundary:
 Keep these layers separate. A package smoke test should not need your HUD, and
 a HUD regression should not duplicate every internal Echo invariant.
 
-## Run the 13-check Studio smoke suite
+## Run the 18-check Studio smoke suite
 
 The repository includes `tests/RuntimeSmoke.luau`. It is executable Script
 source, not a ModuleScript that returns a value. Run it through Studio's
@@ -57,7 +57,7 @@ checks and then fail because the file intentionally has no return value.
 Start a fresh server test and look for exactly:
 
 ```text
-[Echo RuntimeSmoke] PASS (13 checks)
+[Echo RuntimeSmoke] PASS (18 checks)
 ```
 
 Remove or disable the temporary Script after it passes. An assertion before
@@ -65,7 +65,7 @@ the PASS line is the failure; the assertion message names the broken contract.
 
 ### What the suite proves
 
-The 13 checks cover:
+The 18 checks cover:
 
 | Contract | Regression caught |
 |---|---|
@@ -73,10 +73,12 @@ The 13 checks cover:
 | `connected` begins true and becomes false | Public handle state drifting from listener state. |
 | Disconnect is idempotent | Cleanup paths failing when called twice. |
 | Public handles are never recycled | Stale code mutating a replacement listener. |
-| `once` invokes exactly once | Re-entry or repeated milestone delivery. |
+| `once` invokes exactly once and survives re-entry | Repeated milestone delivery during nested fires. |
+| `wait` returns the next fire arguments | Waiters failing to subscribe or resume. |
 | PascalCase aliases work | Compatibility calls silently diverging from lowercase methods. |
 | `disconnectAll` updates every handle | Bulk teardown leaving handles falsely active. |
 | A cleared signal remains reusable | Clearing accidentally becoming permanent destruction. |
+| `destroy` clears current handles and remains the runtime clearing alias | Teardown state drifting from the documented implementation. |
 
 The smoke suite does not prove your game disconnects at the correct time, that
 your payload has the right shape, or that a subscriber callback is cheap. Add
@@ -186,7 +188,7 @@ is understood, or guard them behind your game's development flag.
 | A callback runs after a screen closes | The screen's cleanup owner. | Store the connection and disconnect when that owner closes. |
 | A milestone fires repeatedly | Subscription constructor. | Use `Once`, or persist milestone state when it must survive sessions. |
 | One callback fails while others continue | Studio Output for the spawned task error. | Handle the failing subscriber locally; Echo isolates callback errors from `Fire`. |
-| `DisconnectAll` prevents later listeners | A later `Destroy` call or wrong signal reference. | Separate phase clearing from final owner destruction. |
+| `DisconnectAll` seems to prevent later listeners | The reconnect path and signal identity. | Echo does not poison the signal; verify the new listener uses the same live owner. |
 | Test assertions race callback effects | The asynchronous dispatch boundary. | Wait for the expected callback or one scheduler turn before asserting. |
 
 ## Test ownership, not only delivery
@@ -198,9 +200,9 @@ Run the feature through this release matrix:
 | Open once | Every intended subscriber connects once. |
 | Close once | Every retained connection reports `connected == false`. |
 | Open and close 20 times | Delivery count remains one per active subscriber. |
-| Disconnect during callback | Remaining listeners still receive the current fire safely. |
+| Self-disconnect during callback | The current callback finishes and other still-connected listeners remain valid. |
 | Clear a round | Old listeners disappear and the signal accepts new listeners. |
-| Destroy the feature owner | No later publisher path uses the destroyed signal. |
+| Destroy the feature owner | No later publisher path retains or uses the owner-released signal. |
 | Subscriber throws | Other subscribers still run and Output identifies the failing task. |
 
 For the complete-game version, run the lifecycle regression in
@@ -216,7 +218,7 @@ changes on the same machine and Studio version, and profile subscriber work
 before attributing a frame problem to Echo's dispatch traversal.
 
 Use the [performance chapter](./performance) for storage and profiling
-details. A release is ready when the 13-check suite passes, the feature
+details. A release is ready when the 18-check suite passes, the feature
 regression passes, repeated teardown leaves no duplicate delivery, and the
 real callback workload stays inside your frame budget.
 

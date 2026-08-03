@@ -278,11 +278,17 @@ assert(persistentDeliveries[2] == 2)
 assert(#onceDeliveries == 1)
 assert(onceDeliveries[1] == 1)
 
+local lingering = events.roundEnded:connect(function()
+    error("destroyed event hub delivered to a lingering subscriber")
+end)
+
 events:destroy()
+assert(not lingering.connected)
 ```
 
 The test catches three common regressions: a one-shot listener firing twice, a
-disconnected handle still receiving events, and teardown leaving the hub live.
+disconnected handle still receiving events, and final teardown leaving a
+connection active.
 It intentionally does not assert ordering between different subscribers,
 because asynchronous callback completion order is not part of Echo's contract.
 

@@ -27,8 +27,11 @@ const examples = {
     "local metrics = changed:Connect(\"Metrics\")",
     "changed:Fire(8)",
     "changed:DisconnectAll()",
+    "changed:Connect(\"Next phase\")",
     "changed:Fire(13)",
     "changed:Destroy()",
+    "changed:Connect(\"Post-destroy probe\")",
+    "changed:Fire(21)",
   ].join("\n"),
 };
 
@@ -52,7 +55,7 @@ let model = createModel();
 function createModel() {
   return {
     signalName: null,
-    destroyed: false,
+    destroyCalls: 0,
     fires: 0,
     deliveries: 0,
     listeners: [],
@@ -170,9 +173,6 @@ function assertSignal(operation) {
   if (operation.signal && operation.signal !== model.signalName) {
     throw new Error("Line " + operation.line + ": unknown signal " + operation.signal);
   }
-  if (model.destroyed && operation.type !== "new") {
-    throw new Error("Line " + operation.line + ": the signal is destroyed");
-  }
 }
 
 function addTrace(label, detail, kind) {
@@ -268,11 +268,10 @@ async function execute(operation, version) {
   }
 
   if (operation.type === "new") {
-    if (model.signalName && !model.destroyed) {
+    if (model.signalName) {
       throw new Error("Line " + operation.line + ": this playground models one signal at a time");
     }
     model.signalName = operation.signal;
-    model.destroyed = false;
     addTrace("Echo.new()", "allocated " + operation.signal, "");
   } else if (operation.type === "connect") {
     assertSignal(operation);
@@ -328,9 +327,9 @@ async function execute(operation, version) {
     model.listeners.forEach(function(listener) {
       listener.active = false;
     });
-    model.destroyed = true;
-    addTrace("Destroy", "signal permanently released", "cleanup");
-    setRuntime("Destroyed", "destroyed");
+    model.destroyCalls += 1;
+    addTrace("Destroy", "listeners cleared; terminal use is conventional", "cleanup");
+    setRuntime("Cleared by Destroy", "complete");
   }
 
   render();
@@ -361,13 +360,13 @@ async function runScenario() {
     for (const operation of operations) {
       await execute(operation, version);
     }
-    if (version === runVersion && !model.destroyed) {
+    if (version === runVersion) {
       setRuntime("Complete", "complete");
     }
   } catch (error) {
     if (version === runVersion) {
       errorOutput.textContent = error.message;
-      setRuntime("Stopped", "destroyed");
+      setRuntime("Stopped", "error");
     }
   } finally {
     if (version === runVersion) {
