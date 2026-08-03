@@ -24,7 +24,7 @@ module.exports = {
     {
       type: "category",
       label: "Production",
-      items: ["performance", "integrations"],
+      items: ["testing-and-debugging", "performance", "integrations"],
     },
     {
       type: "category",
