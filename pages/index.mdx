@@ -1,0 +1,94 @@
+---
+title: Echo Handbook
+description: Learn typed Roblox signals through guided chapters, runnable experiments, and exact API reference.
+hide_table_of_contents: true
+---
+
+<main className="handbook-home handbook-home--echo">
+  <header className="handbook-hero">
+    <div className="handbook-hero__copy">
+      <p className="handbook-kicker"><span className="streamline-icon streamline-icon--identity" aria-hidden="true"></span> The Echo Living Handbook</p>
+      <h1>Echo</h1>
+      <p className="handbook-deck">Small typed signals with connection lifetimes you can reason about.</p>
+      <p className="handbook-intro">Learn the complete signal lifecycle, test dispatch behavior in the browser, then confirm every signature in the generated reference.</p>
+      <div className="handbook-actions">
+        <a className="button button--primary" href="/echo-rbx/docs/intro/"><span className="streamline-icon streamline-icon--book" aria-hidden="true"></span> Start chapter one</a>
+        <a className="button button--secondary" href="/echo-rbx/playground/"><span className="streamline-icon streamline-icon--play" aria-hidden="true"></span> Open the signal lab</a>
+      </div>
+    </div>
+
+    <figure className="handbook-proof">
+      <img className="tutorial-demo__motion" src="/echo-rbx/tutorials/echo-signal-flow.gif" alt="Echo listeners receiving score events in Roblox Studio" />
+      <img className="tutorial-demo__still" src="/echo-rbx/tutorials/echo-signal-flow.png" alt="Echo score signal tutorial result" />
+      <figcaption><span>Studio proof 01</span> Persistent, one-shot, and disconnected listeners sharing one signal.</figcaption>
+    </figure>
+  </header>
+
+  <section className="handbook-project-band">
+    <div><p className="handbook-kicker"><span className="streamline-icon streamline-icon--code" aria-hidden="true"></span> Complete game track</p><h2>Build Crystal Run's local event layer.</h2><p>Bridge confirmed network facts into typed HUD, feedback, analytics, and milestone subscribers with one deliberate teardown path.</p></div>
+    <a className="button" href="/echo-rbx/docs/project-crystal-run/">Open layer 2 of 4</a>
+  </section>
+
+  <section className="handbook-section handbook-section--route">
+    <div className="handbook-section__heading">
+      <p className="handbook-kicker">Guided route</p>
+      <h2>From first fire to deliberate teardown</h2>
+      <p>Four short chapters move from the mental model to a working Studio feature.</p>
+    </div>
+
+    <div className="chapter-route">
+      <a className="chapter-route__item" href="/echo-rbx/docs/intro/">
+        <span className="chapter-route__number">01</span>
+        <span><strong>Meet the signal</strong><small>Understand signal, connection, listener, and owner.</small></span>
+        <span className="chapter-route__action">Read</span>
+      </a>
+      <a className="chapter-route__item" href="/echo-rbx/docs/getting-started/">
+        <span className="chapter-route__number">02</span>
+        <span><strong>Fire your first event</strong><small>Install Echo, add a typed listener, and disconnect it.</small></span>
+        <span className="chapter-route__action">Build</span>
+      </a>
+      <a className="chapter-route__item" href="/echo-rbx/docs/tutorial-score-feed/">
+        <span className="chapter-route__number">03</span>
+        <span><strong>Build a score feed</strong><small>Coordinate persistent, analytics, and milestone subscribers.</small></span>
+        <span className="chapter-route__action">Tutorial</span>
+      </a>
+      <a className="chapter-route__item" href="/echo-rbx/docs/playground/">
+        <span className="chapter-route__number">04</span>
+        <span><strong>Stress the lifecycle</strong><small>Reorder Fire, Once, DisconnectAll, and Destroy calls.</small></span>
+        <span className="chapter-route__action">Practice</span>
+      </a>
+    </div>
+  </section>
+
+  <section className="handbook-section handbook-section--model">
+    <div className="handbook-section__heading">
+      <p className="handbook-kicker">Mental model</p>
+      <h2>One source, independent deliveries</h2>
+    </div>
+    <div className="concept-flow concept-flow--echo" aria-label="Echo signal flow">
+      <div className="concept-flow__node"><span>Source</span><strong>signal:Fire(10)</strong></div>
+      <span className="concept-flow__connector">dispatches</span>
+      <div className="concept-flow__node"><span>Registry</span><strong>active connections</strong></div>
+      <span className="concept-flow__connector">schedules</span>
+      <div className="concept-flow__stack"><span>HUD listener</span><span>Analytics listener</span><span>Once listener</span></div>
+    </div>
+    <p className="handbook-model-note">Connection order is stable. Callback completion order is intentionally independent.</p>
+  </section>
+
+  <section className="handbook-section handbook-section--modes">
+    <div className="handbook-section__heading">
+      <p className="handbook-kicker">Use the handbook your way</p>
+      <h2>Learn, inspect, or look up</h2>
+    </div>
+    <div className="handbook-modes">
+      <a href="/echo-rbx/docs/signals/"><span>Concept guide</span><strong>Signals and connections</strong><small>Dispatch, re-entry, stable handles, and aliases.</small></a>
+      <a href="/echo-rbx/docs/lifecycle/"><span>Production guide</span><strong>Own the lifetime</strong><small>Waiting, clearing, reuse, and teardown conventions.</small></a>
+      <a href="/echo-rbx/docs/api-overview/"><span>Reference</span><strong>Open the API map</strong><small>Choose Echo, Signal, or Connection without hunting.</small></a>
+    </div>
+  </section>
+
+  <section className="handbook-reference-band">
+    <div><p className="handbook-kicker">Ready to look something up?</p><h2>The generated reference stays one step away.</h2></div>
+    <a className="button button--secondary" href="/echo-rbx/api/Echo/">Browse Echo API</a>
+  </section>
+</main>

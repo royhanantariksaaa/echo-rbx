@@ -6,9 +6,20 @@ description: Create, fire, disconnect, and clean up a typed Echo signal in Roblo
 
 # Tutorial: Build a Score Feed
 
-This tutorial builds one typed score signal with three independent subscribers:
-a HUD total, an analytics listener, and a one-time milestone. The analytics
-listener disconnects while the signal remains live.
+<div className="lesson-header">
+  <p className="lesson-kicker"><span className="streamline-icon streamline-icon--code" aria-hidden="true"></span> Focused tutorial / Chapter 3</p>
+  <p className="lesson-summary">Build one typed score signal with independent HUD, analytics, and one-time milestone subscribers, then shorten one listener's lifetime without stopping the signal.</p>
+  <div className="lesson-progress" aria-label="Learn Echo progress: 60 percent"><span className="lesson-progress__fill lesson-progress__fill--60"></span></div>
+</div>
+
+<div className="lesson-goals">
+  <strong>What this feature proves</strong>
+  <ul>
+    <li>One typed event can support subscribers with different responsibilities.</li>
+    <li>Connection lifetime and signal lifetime can be managed independently.</li>
+    <li>The same pattern scales into Crystal Run's shared client event hub.</li>
+  </ul>
+</div>
 
 <figure className="tutorial-demo">
   <img className="tutorial-demo__motion" src="/echo-rbx/tutorials/echo-signal-flow.gif" alt="Echo score signal firing in Roblox Studio" />
@@ -126,5 +137,11 @@ callback parameters and `Fire` calls before playtesting.
 
 ## Next steps
 
-Read [Signals and Connections](./signals) for dispatch semantics, then use
-[Lifecycle](./lifecycle) to choose between `DisconnectAll` and `Destroy`.
+Read [Signals and Connections](./signals) for dispatch semantics and
+[Lifecycle](./lifecycle) for teardown choices. Then apply both ideas in a
+multi-system client event layer.
+
+<div className="chapter-next">
+  <p><strong>Continue into the complete game.</strong><br />Bridge Flite round facts into typed HUD, feedback, analytics, and milestone subscribers.</p>
+  <a href="./project-crystal-run">Build Crystal Run's events</a>
+</div>

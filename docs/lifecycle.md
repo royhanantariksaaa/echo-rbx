@@ -4,6 +4,11 @@ sidebar_position: 4
 
 # Lifecycle
 
+<div className="lesson-header">
+  <p className="lesson-kicker"><span className="streamline-icon streamline-icon--check" aria-hidden="true"></span> Signal semantics / Ownership</p>
+  <p className="lesson-summary">Match every connection and signal to an owner, then choose the narrowest teardown operation that ends that lifetime safely.</p>
+</div>
+
 ## Disconnect what you own
 
 Store the returned connection near the resource that owns it and disconnect it
@@ -58,3 +63,9 @@ terminal ownership, but do not depend on it rejecting future connections.
 Handler errors occur inside spawned tasks. Wrap callbacks in `pcall` when an
 owner needs centralized error reporting or recovery.
 :::
+
+## In Crystal Run
+
+`FeedbackController` disconnects only its own subscribers, while
+`EventBridgeController` owns and destroys the shared hub. See the
+[complete event layer](./project-crystal-run) for both lifetimes side by side.

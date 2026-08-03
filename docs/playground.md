@@ -6,13 +6,25 @@ description: Run Echo signal lifecycle scenarios and watch connections, one-shot
 
 # Echo Playground
 
-Edit a small, real-shaped Echo scenario and watch every connection change as
-the signal fires. The browser model focuses on lifecycle semantics, so it is
-fast enough to experiment with before opening Studio.
+<div className="lesson-header">
+  <p className="lesson-kicker"><span className="streamline-icon streamline-icon--play" aria-hidden="true"></span> Practice lab / Chapter 4</p>
+  <p className="lesson-summary">Edit a real-shaped Echo scenario and watch every connection change as the signal fires, disconnects, and reaches teardown.</p>
+  <div className="lesson-progress" aria-label="Learn Echo progress: 80 percent"><span className="lesson-progress__fill lesson-progress__fill--80"></span></div>
+</div>
+
+<div className="lesson-goals">
+  <strong>Use the lab to answer</strong>
+  <ul>
+    <li>Which listeners receive each fire?</li>
+    <li>What changes when a connection, all connections, or the signal is released?</li>
+    <li>Which lifecycle belongs in the focused feature and the complete game?</li>
+  </ul>
+</div>
 
 <div className="playground-actions">
   <a className="button button--primary" href="/echo-rbx/playground/" target="_blank" rel="noreferrer">Open full screen</a>
   <a className="button button--secondary" href="/echo-rbx/docs/tutorial-score-feed/">Build it in Studio</a>
+  <a className="button button--secondary" href="/echo-rbx/docs/project-crystal-run/">Continue to Crystal Run</a>
 </div>
 
 <div className="playground-frame">
@@ -48,3 +60,8 @@ Continue with [Getting Started](./getting-started) for installation, then use
 [Signals and Connections](./signals) and the
 [generated Echo reference](../api/Echo) when you need exact behavior and
 signatures.
+
+<div className="chapter-next">
+  <p><strong>Ready for production-shaped composition?</strong><br />Use Echo as the typed event layer between Crystal Run's network model and client features.</p>
+  <a href="./project-crystal-run">Build the event layer</a>
+</div>

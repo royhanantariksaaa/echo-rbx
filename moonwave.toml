@@ -56,3 +56,10 @@ href = "https://royhanantariksaaa.github.io/weavekit-rbx/"
 [[footer.links.items]]
 label = "Flite"
 href = "https://royhanantariksaaa.github.io/flite-rbx/"
+
+[[footer.links]]
+title = "Credits"
+
+[[footer.links.items]]
+label = "Streamline Core icons (CC BY 4.0)"
+href = "https://streamlinehq.com"

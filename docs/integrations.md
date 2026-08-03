@@ -4,6 +4,11 @@ sidebar_position: 6
 
 # Integrations
 
+<div className="lesson-header">
+  <p className="lesson-kicker"><span className="streamline-icon streamline-icon--code" aria-hidden="true"></span> Production / Composition</p>
+  <p className="lesson-summary">Place Echo at local feature boundaries, then let Weave scopes or Flite owners control connection lifetime without coupling subscribers together.</p>
+</div>
+
 ## Weave cleanup
 
 ```lua
@@ -46,3 +51,9 @@ type InventoryChanged = Echo.Signal<Player, string, number>
 
 local inventoryChanged: InventoryChanged = Echo.new()
 ```
+
+## In Crystal Run
+
+The [complete event layer](./project-crystal-run) translates Flite signals
+once, publishes typed Echo events, and lets the Weave HUD consume those events
+without importing the service proxy.

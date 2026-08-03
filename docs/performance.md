@@ -4,6 +4,11 @@ sidebar_position: 5
 
 # Performance
 
+<div className="lesson-header">
+  <p className="lesson-kicker"><span className="streamline-icon streamline-icon--code" aria-hidden="true"></span> Production / Profiling</p>
+  <p className="lesson-summary">Understand the linked-list storage choice, the scheduler boundary, and which measurements matter before changing signal architecture.</p>
+</div>
+
 Echo uses `--!native` and `--!optimize 2`, but its important performance choice
 is the listener data structure.
 
@@ -39,3 +44,9 @@ Signal dispatch is pointer traversal plus dynamic callback invocation, not
 homogeneous numeric work. Luau exposes neither portable SIMD intrinsics nor
 direct L1/L2/L3/L4 placement controls. Echo keeps nodes small and traverses
 once, then lets profiling decide whether callback work or scheduling dominates.
+
+## Profile Crystal Run
+
+Use the [complete event layer](./project-crystal-run) to measure subscriber
+count, event frequency, callback duration, and allocation separately. Optimize
+the callback doing the work before replacing a stable dispatch boundary.

@@ -4,6 +4,11 @@ sidebar_position: 3
 
 # Signals and Connections
 
+<div className="lesson-header">
+  <p className="lesson-kicker"><span className="streamline-icon streamline-icon--identity" aria-hidden="true"></span> Signal semantics / Delivery</p>
+  <p className="lesson-summary">Learn the complete Signal and Connection contract: stable handles, asynchronous fan-out, one-shot delivery, waiting, re-entry, and reuse.</p>
+</div>
+
 ## Signal API
 
 | Primary method | Alias | Behavior |
@@ -68,3 +73,9 @@ end)
 
 signal:fire(1)
 ```
+
+## In Crystal Run
+
+The [local event layer](./project-crystal-run) uses persistent connections for
+HUD and analytics, then `once` for a first-pickup milestone. Its regression
+test verifies those subscribers without starting the network framework.
