@@ -1,0 +1,97 @@
+---
+title: Echo Handbook
+description: Learn typed Roblox signals through guided chapters, runnable experiments, and exact API reference.
+hide_table_of_contents: true
+---
+
+import { LibraryHome } from "@site/src/components/docs/library-home"
+
+<LibraryHome
+  name="Echo"
+  strapline="Small typed signals with connection lifetimes you can reason about."
+  introduction="Learn the complete signal lifecycle, test dispatch behavior in a focused lab, then confirm every signature in the generated reference."
+  demoMotion="/tutorials/echo-signal-flow.gif"
+  demoStill="/tutorials/echo-signal-flow.png"
+  demoDescription="Persistent, one-shot, and disconnected listeners sharing one score source."
+  project={{
+    eyebrow: "Complete game track / Layer 2 of 4",
+    title: "Build Crystal Run's event layer.",
+    description: "Turn authoritative round and pickup facts into focused HUD, feedback, analytics, and milestone subscriptions.",
+    href: "/docs/project-crystal-run",
+    action: "Build the event layer",
+  }}
+  routeTitle="From one listener to a production event layer"
+  routeDescription="Learn the lifetime rules in isolation, then apply them to one complete game feature."
+  routes={[
+    {
+      number: "01",
+      label: "Read",
+      title: "Meet the signal",
+      description: "Understand signals, connections, listeners, and ownership.",
+      href: "/docs/intro",
+    },
+    {
+      number: "02",
+      label: "Build",
+      title: "Fire your first event",
+      description: "Install Echo, add a typed listener, and disconnect it deliberately.",
+      href: "/docs/getting-started",
+    },
+    {
+      number: "03",
+      label: "Tutorial",
+      title: "Build a score feed",
+      description: "Coordinate HUD, analytics, and milestone subscribers in Studio.",
+      href: "/docs/tutorial-score-feed",
+    },
+    {
+      number: "04",
+      label: "Practice",
+      title: "Stress the lifecycle",
+      description: "Reorder Fire, Once, DisconnectAll, and Destroy calls in the lab.",
+      href: "/docs/playground",
+    },
+  ]}
+  modelTitle="One source, independent subscriber lifetimes"
+  modelDescription="A signal owns dispatch. Connections own participation. The feature that creates them owns teardown."
+  modelSteps={[
+    {
+      eyebrow: "Source",
+      title: "Create one typed signal",
+      description: "Publish a fact once without coupling the producer to UI, analytics, or feedback code.",
+    },
+    {
+      eyebrow: "Dispatch",
+      title: "Run listeners independently",
+      description: "Persistent and one-shot subscribers receive the same value through Roblox's task scheduler.",
+    },
+    {
+      eyebrow: "Ownership",
+      title: "Release handles deliberately",
+      description: "Disconnect a subscriber, clear the set, or destroy the signal at the boundary that owns it.",
+    },
+  ]}
+  threads={[
+    {
+      icon: "book",
+      title: "Signal semantics",
+      description: "Dispatch order, Once, connection identity, and teardown behavior.",
+      href: "/docs/signals",
+      action: "Read the model",
+    },
+    {
+      icon: "code",
+      title: "Complete game",
+      description: "Apply Echo between Crystal Run's network model and client features.",
+      href: "/docs/project-crystal-run",
+      action: "Build the layer",
+    },
+    {
+      icon: "identity",
+      title: "API reference",
+      description: "Generated signatures, aliases, members, and source links.",
+      href: "/api/Echo",
+      action: "Browse the API",
+    },
+  ]}
+/>

@@ -1,212 +1,217 @@
 # Echo
 
-A lean, extremely fast, pure-Luau signal implementation.
+[![Documentation](https://github.com/royhanantariksaaa/echo-rbx/actions/workflows/docs.yml/badge.svg)](https://royhanantariksaaa.github.io/echo-rbx/)
 
-Utilizes a doubly-linked list for O(1) connection/disconnection and thread
-pooling for zero-yield instant execution. Based on fast-signal patterns.
+**Documentation:** [royhanantariksaaa.github.io/echo-rbx](https://royhanantariksaaa.github.io/echo-rbx/)
 
-Echo is a leaf primitive with **zero dependencies** — it's consumed by
-[Weave](https://github.com/royhanantariksaaa/weave-rbx) (reactive UI) and
-[Flite](https://github.com/royhanantariksaaa/flite-rbx) (game framework) as
-their underlying event/signal layer.
+Echo is a small, dependency-free Luau signal implementation for Roblox. It
+uses stable connection handles, O(1) linked-list insertion and removal, and a
+reusable runner coroutine for asynchronous handler dispatch.
 
----
+Echo is the event primitive used by
+[Weave](https://github.com/royhanantariksaaa/weave-rbx) and
+[Flite](https://github.com/royhanantariksaaa/flite-rbx).
 
-## Table of Contents
+## Contents
 
 - [Installation](#installation)
 - [Quick Start](#quick-start)
-- [API Reference](#api-reference)
-  - [Echo.new()](#echonew)
-  - [Signal Methods](#signal-methods)
-  - [Connection](#connection)
-- [How It Works](#how-it-works)
-- [Integration with Weave & Flite](#integration-with-weave--flite)
-
----
+- [API](#api)
+- [Dispatch Semantics](#dispatch-semantics)
+- [Performance](#performance)
+- [Benchmarks](#benchmarks)
+- [Integration](#integration)
+- [Tests](#tests)
 
 ## Installation
 
-### As a git submodule
-
-From your game repo root (assuming `src/Shared` maps to `ReplicatedStorage`):
+Add the repository at `ReplicatedStorage.Libraries.Echo`:
 
 ```sh
 git submodule add https://github.com/royhanantariksaaa/echo-rbx.git src/Shared/Libraries/Echo
 ```
 
-This lands Echo at `ReplicatedStorage.Libraries.Echo`, which is what Weave and
-Flite expect.
-
-### Standalone dev
-
-Open the project in [Rojo](https://rojo.space):
+For standalone Rojo development:
 
 ```sh
 rojo serve default.project.json
 ```
 
----
+Echo has no runtime dependencies.
 
 ## Quick Start
 
 ```lua
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Echo = require(ReplicatedStorage.Libraries.Echo)
 
--- Create a signal
-local signal = Echo.new()
+local scored = Echo.new()
 
--- Connect a handler
-local connection = signal:connect(function(name, score)
-    print(name, "scored", score)
+local connection = scored:connect(function(playerName, points)
+    print(playerName, points)
 end)
 
--- Fire it
-signal:fire("Alice", 42)  --> Alice scored 42
-
--- Disconnect when done
+scored:fire("Alice", 42)
 connection:disconnect()
 
--- One-shot listener
-signal:once(function(msg)
-    print("first:", msg)
+scored:once(function(message)
+    print(message)
 end)
-signal:fire("hello")  --> first: hello
-signal:fire("world")  -- (nothing — already disconnected)
-
--- Yield until the next fire
-task.spawn(function()
-    local args = signal:wait()
-    print("resumed with:", args)
-end)
-signal:fire("resumed")
+scored:fire("called once")
 ```
 
----
-
-## API Reference
-
-### Echo.new()
+PascalCase aliases are available when a codebase prefers Roblox-style naming:
 
 ```lua
-local signal: Echo.Signal = Echo.new()
+local connection = scored:Connect(function(value)
+    print(value)
+end)
+
+scored:Fire("hello")
+connection:Disconnect()
 ```
 
-Creates and returns a new Signal.
+## API
 
-### Signal Methods
+### `Echo.new()`
 
-| Method | Signature | Description |
-|--------|-----------|-------------|
-| `:connect(fn)` | `(handler: (...any) -> ()) -> Connection` | Subscribe a handler invoked on every `:fire`. Returns a `Connection` to disconnect later. |
-| `:once(fn)` | `(handler: (...any) -> ()) -> Connection` | Like `:connect`, but auto-disconnects after the first invocation. |
-| `:wait()` | `() -> ...any` | **Yields** the current thread until the next `:fire`, then returns the fired arguments. |
-| `:fire(...)` | `(...any) -> ()` | Dispatches arguments to every connected handler. Non-yielding; errors in one handler are isolated. |
-| `:disconnectAll()` | `() -> ()` | Disconnects every active handler. The signal remains usable afterward. |
-| `:destroy()` | `() -> ()` | Equivalent to `:disconnectAll()`. Convention method — don't use the signal after this. |
+```lua
+local signal = Echo.new()
+```
+
+Creates an empty signal. The module exports generic `Signal<T...>` and
+`Connection<T...>` types for typed consumers.
+
+### Signal
+
+| Primary method | Compatibility alias | Signature | Behavior |
+|---|---|---|---|
+| `:connect(fn)` | `:Connect(fn)` | `((...T) -> ()) -> Connection<T...>` | Adds a persistent handler. |
+| `:once(fn)` | `:Once(fn)` | `((...T) -> ()) -> Connection<T...>` | Adds a handler that disconnects before its first invocation. |
+| `:wait()` | `:Wait()` | `() -> ...T` | Yields the current thread until the next fire and returns all arguments. |
+| `:fire(...)` | `:Fire(...)` | `(...T) -> ()` | Schedules every currently connected handler without yielding the caller. |
+| `:disconnectAll()` | `:DisconnectAll()` | `() -> ()` | Disconnects all current handlers. The signal remains reusable. |
+| `:destroy()` | `:Destroy()` | `() -> ()` | Exact lifecycle alias of `disconnectAll`; terminal use is conventional, not enforced. |
 
 ### Connection
 
-| Field/Method | Type | Description |
-|--------------|------|-------------|
-| `.connected` | `boolean` | `true` until `:disconnect()` is called (or auto-disconnected by `:once`). |
-| `:disconnect()` | `() -> ()` | Severs the subscription. Safe to call multiple times. |
+| Field or method | Compatibility alias | Behavior |
+|---|---|---|
+| `.connected` | none | `true` while the subscription is active. |
+| `:disconnect()` | `:Disconnect()` | Removes the subscription in O(1). Repeated calls are safe. |
 
----
+Connection objects are stable public handles. Echo deliberately does not
+recycle them, so an old disconnected handle can never refer to a later
+subscription.
 
-## How It Works
+## Dispatch Semantics
 
-**Linked-list connections:** Each connection is a node in a doubly-linked list
-owned by the signal. Connect and disconnect are both O(1) — no array scanning,
-no table rehashing.
+- `fire` does not explicitly yield or await completion. `task.spawn` may begin
+  a handler before `fire` returns.
+- Handler errors stay in the spawned task and do not propagate through
+  `fire` or prevent other handlers from being scheduled.
+- Handlers are traversed in connection order, but asynchronous completion
+  order is not guaranteed.
+- A yielding handler does not block other handlers. Its runner remains busy,
+  so re-entrant dispatch uses another runner.
+- `once` disconnects before calling user code, including during re-entrant
+  fires.
+- `disconnectAll` updates every returned handle's `.connected` field.
+- `wait` must be called from a yieldable thread.
 
-**Thread pooling:** A single runner thread is created on first `:fire` and
-reused for subsequent handlers via `coroutine.yield`/`task.spawn` ping-pong.
-This avoids the overhead of creating a new coroutine per handler invocation.
+## Performance
 
-**Error isolation:** Each handler runs in its own `task.spawn` context, so an
-error in one handler does not propagate to the caller of `:fire` or interrupt
-other handlers.
+The source uses `--!native` and `--!optimize 2`. Its storage is intentionally
+simple:
 
----
+- A doubly linked list gives O(1) connect and disconnect with no compaction.
+- Head and tail pointers make append O(1).
+- Firing performs one forward traversal and saves the next node before
+  scheduling user code.
+- One completed, non-yielding handler runner can be reused by later dispatches.
+- Connection pooling is avoided because recycling public handles can let stale
+  references mutate unrelated subscriptions.
 
-## Integration with Weave & Flite
+There is no explicit SIMD implementation. Signal dispatch is pointer traversal
+plus dynamic callback invocation, not homogeneous numeric work that maps well
+to SIMD lanes. Roblox Luau also provides no portable API for controlling CPU
+L1, L2, L3, or platform-specific additional caches. Echo improves locality
+indirectly by keeping nodes small and traversing once, but linked lists still
+trade spatial locality for constant-time churn. That tradeoff is measured
+rather than assumed.
 
-Echo is designed as a drop-in signal primitive that other libraries build on:
+In real games, callback work and scheduler overhead commonly dominate the few
+table accesses inside Echo. Profile the complete workload before adding more
+storage complexity.
 
-### With Weave
+## Benchmarks
 
-Weave uses Echo internally for its reactive engine — every state change fires
-through an Echo signal, and `scope:watch`, `scope:observe`, computed
-dependencies, and the reconciler's binding system all subscribe via Echo.
+`benchmarks/SignalStorage.bench.luau` compares the linked-list strategy with a
+dense array that compacts removed entries. It includes steady dispatch and a
+disconnect/reconnect churn case at 8, 64, and 512 listeners.
 
-You don't need to `require` Echo directly when using Weave. However, if you
-want a standalone signal inside a Weave component (e.g., a custom event bus),
-Echo is available at the same path:
+With the Luau CLI installed:
+
+```sh
+luau benchmarks/SignalStorage.bench.luau
+```
+
+Results vary by Luau version and hardware. The benchmark exists to guard the
+storage decision, not to promise a universal timing number. Dense arrays can
+win on pure sequential reads; the linked list avoids their compaction cost and
+preserves stable O(1) removals.
+
+## Integration
+
+### Weave cleanup
 
 ```lua
-local Echo = require(ReplicatedStorage.Libraries.Echo)
-local Weave = require(ReplicatedStorage.Libraries.Weave)
-
 local bus = Echo.new()
 
 Weave.mount(PlayerGui, function(scope)
+    local lastEvent = scope:Value("Waiting")
+    local connection = bus:connect(function(kind, timestamp)
+        lastEvent:Set(`{kind} at {timestamp}`)
+    end)
+
     scope:onCleanup(function()
-        bus:disconnectAll()
+        connection:disconnect()
     end)
 
     return scope:TextButton {
-        Text = "Emit",
-        [Weave.OnEvent "Activated"] = function()
+        Text = lastEvent,
+        [Weave.OnEvent("Activated")] = function()
             bus:fire("button-pressed", os.clock())
         end,
     }
 end)
 ```
 
-### With Flite
+The Weave scope owns only its connection. The module that created `bus` owns
+final signal teardown, so unmounting this UI does not clear other subscribers.
 
-Flite uses Echo for server-side `FrameworkSignal` (the base of `MapState`,
-`ValueState`, etc.) and for the local `DomainBus` event system. Flite signals
-exposed via `self:useSignal("EventName")` wrap Echo signals with network
-replication.
+### Flite signals
 
-```lua
--- Flite service (server)
-Flite.createService("NotificationService", function(self)
-    local notify = self:useSignal("Notify")
+Flite uses Echo behind local framework signals and state subscriptions. Its
+network signal facade adds methods such as `fireClient` and `fireAllClients`;
+those methods belong to Flite, not to a standalone Echo signal.
 
-    self:onPlayerAdded(function(player)
-        notify:fireAllClients(player.Name .. " joined!")
-    end)
-end)
-
--- Flite controller (client)
-Flite.createController("NotificationController", function(self)
-    local notifyService = self:useService("NotificationService")
-
-    notifyService.Notify:connect(function(message)
-        print("Notification:", message)
-    end)
-end)
+```text
+Echo       signal dispatch
+  -> Weave reactive subscriptions
+  -> Flite local framework events and state observers
 ```
 
-### All three together
+## Tests
 
-When Echo + Weave + Flite are combined, the dependency chain is:
+`tests/RuntimeSmoke.luau` is a Studio smoke suite covering dispatch,
+idempotent disconnection, stable stale handles, `once`, complete PascalCase
+compatibility aliases, `disconnectAll`, and reuse after clearing.
 
-```
-Echo (signals)
- └─ Weave (reactivity + UI, built on Echo)
-     └─ Flite (game framework, built on Weave + Echo)
-```
-
-Flite controllers each receive a **Weave scope** (via `ScopeExtensions`), so
-you get Flite's networking hooks + Weave's full reactive UI toolkit in one
-place. Echo quietly powers the reactivity under both layers.
-
----
+The storage comparison lives separately in
+`benchmarks/SignalStorage.bench.luau` so correctness tests do not depend on
+machine-specific timing thresholds.
 
 ## License
 
-[MIT](./LICENSE).
+[MIT](./LICENSE)
