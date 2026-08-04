@@ -6,7 +6,7 @@
     "start": "docusaurus start --host 127.0.0.1",
     "build": "docusaurus build",
     "serve": "docusaurus serve --host 127.0.0.1",
-    "deploy": "gh-pages -d build -u \"github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>\"",
+    "deploy": "gh-pages -d build",
     "clear": "docusaurus clear",
     "swizzle:search": "docusaurus swizzle docusaurus-lunr-search SearchBar --eject --danger"
   },
