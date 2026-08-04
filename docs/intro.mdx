@@ -1,0 +1,74 @@
+---
+sidebar_position: 1
+slug: /intro
+title: Echo
+description: Learn where Echo fits and choose a path through the handbook.
+hide_title: true
+---
+
+<LessonHeader
+  title="Echo"
+  chapter="Introduction / Chapter 1"
+  summary="Echo is a small typed Luau signal library for Roblox. It provides asynchronous dispatch, stable connection handles, idempotent teardown, and lowercase APIs with complete PascalCase compatibility aliases."
+  progress={20}
+/>
+
+<GuideCallout title="By the end of this chapter" variant="success">
+  <ul>
+    <li>Know where Echo fits in a Roblox game.</li>
+    <li>Choose between the focused lesson, practice lab, and complete game track.</li>
+    <li>Understand the guarantees that distinguish Echo from a raw callback list.</li>
+  </ul>
+</GuideCallout>
+
+<DemoFrame
+  title="Signal lifecycle in Studio"
+  description="Persistent, one-shot, and disconnected listeners sharing one source."
+  motionSrc="/tutorials/echo-signal-flow.gif"
+  stillSrc="/tutorials/echo-signal-flow.png"
+  alt="Echo signal subscribers receiving score events in Roblox Studio"
+/>
+
+## Choose your path
+
+<LearningPath items={[
+  {
+    eyebrow: "01 / Experiment",
+    title: "Run the signal lab",
+    description: "Edit fires and listeners with instant lifecycle feedback.",
+    href: "/docs/playground",
+  },
+  {
+    eyebrow: "02 / Focus",
+    title: "Make a score feed",
+    description: "Learn the complete signal lifecycle in one contained Studio feature.",
+    href: "/docs/tutorial-score-feed",
+  },
+  {
+    eyebrow: "03 / Complete game",
+    title: "Wire Crystal Run events",
+    description: "Connect server facts to HUD, feedback, analytics, and milestones.",
+    href: "/docs/project-crystal-run",
+  },
+  {
+    eyebrow: "04 / Reference",
+    title: "Check the API",
+    description: "Confirm signatures, aliases, dispatch rules, and cleanup.",
+    href: "/docs/api-overview",
+  },
+]} />
+
+## Why Echo
+
+- **Small surface:** one constructor, one signal type, and one connection type.
+- **Safe handles:** disconnected connections are never recycled into unrelated subscriptions.
+- **Predictable dispatch:** each listener runs independently through Roblox's task scheduler.
+- **Churn-friendly storage:** connect and disconnect are constant-time.
+
+New to Echo? Continue with [Getting Started](getting-started), use the
+[interactive playground](playground) to test semantics, then build Echo's
+[Crystal Run event layer](project-crystal-run) in the complete game track.
+
+<GuideCallout title="Part of a composable stack">
+  <p>Echo is standalone. Weave uses the same lifecycle ideas for reactive UI, while Flite uses Echo for local framework signals and state observation.</p>
+</GuideCallout>

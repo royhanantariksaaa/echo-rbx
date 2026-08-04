@@ -110,3 +110,5 @@ check(postDestroyCount == 1, "destroy should remain an exact clearing alias at r
 signal:destroy()
 
 print(`[Echo RuntimeSmoke] PASS ({checks} checks)`)
+
+return true

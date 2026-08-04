@@ -21,3 +21,6 @@
 # Moonwave documentation output
 /build
 /node_modules
+/website/build
+/website/.docusaurus
+/website/node_modules
