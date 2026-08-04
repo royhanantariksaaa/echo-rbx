@@ -73,15 +73,15 @@ export function LibraryHome({
   const stillUrl = useBaseUrl(demoStill)
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 pb-20 pt-8 sm:px-6 lg:pt-12">
-      <header className="max-w-3xl">
-        <Badge variant="outline" className="mb-4 gap-1.5 rounded-md font-mono text-[0.7rem] uppercase">
+    <main className="library-home mx-auto w-full max-w-6xl px-4 pb-20 pt-8 sm:px-6 lg:pt-12">
+      <header className="library-home__hero max-w-3xl">
+        <Badge variant="outline" className="mb-4 gap-1.5 rounded-md font-mono text-xs uppercase">
           <StreamlineIcon name="identity" className="size-3.5" />
           Living handbook
         </Badge>
-        <h1 className="mb-3 text-4xl font-bold leading-tight tracking-normal text-foreground sm:text-5xl">{name}</h1>
-        <p className="mb-3 text-xl font-medium leading-8 text-foreground">{strapline}</p>
-        <p className="mb-0 max-w-2xl text-base leading-7 text-muted-foreground">{introduction}</p>
+        <h1 className="library-home__title mb-3 text-4xl font-bold leading-tight tracking-normal text-foreground sm:text-5xl">{name}</h1>
+        <p className="library-home__strapline mb-3 text-xl font-medium leading-8 text-foreground">{strapline}</p>
+        <p className="library-home__introduction mb-0 max-w-2xl text-base leading-7 text-muted-foreground">{introduction}</p>
         <div className="mt-6 flex flex-wrap gap-2">
           <Button asChild>
             <Link to="/docs/intro">
@@ -98,14 +98,14 @@ export function LibraryHome({
         </div>
       </header>
 
-      <Card className="my-10 gap-0 overflow-hidden py-0 shadow-none">
+      <Card className="library-home__demo my-10 gap-0 overflow-hidden py-0 shadow-none">
         <CardHeader className="grid gap-2 border-b bg-muted/35 px-5 py-4 sm:grid-cols-[1fr_auto] sm:items-center">
           <div>
             <CardTitle className="flex items-center gap-2 text-sm">
               <StreamlineIcon name="play" className="size-4 text-primary" />
               Recorded in Roblox Studio
             </CardTitle>
-            <CardDescription className="mt-1 text-xs">{demoDescription}</CardDescription>
+            <CardDescription className="mt-1">{demoDescription}</CardDescription>
           </div>
           <Badge variant="secondary" className="w-fit rounded-md">Runtime proof</Badge>
         </CardHeader>
@@ -166,7 +166,7 @@ export function LibraryHome({
         <div className="grid overflow-hidden rounded-lg border md:grid-cols-3 md:divide-x">
           {modelSteps.map((step, index) => (
             <div className="border-b p-5 last:border-b-0 md:border-b-0" key={step.title}>
-              <span className="font-mono text-[0.7rem] font-semibold uppercase text-primary">{String(index + 1).padStart(2, "0")} / {step.eyebrow}</span>
+              <span className="font-mono text-xs font-semibold uppercase text-primary">{String(index + 1).padStart(2, "0")} / {step.eyebrow}</span>
               <h3 className="mb-2 mt-3 text-base font-semibold text-foreground">{step.title}</h3>
               <p className="mb-0 text-sm leading-6 text-muted-foreground">{step.description}</p>
             </div>
@@ -192,7 +192,7 @@ export function LibraryHome({
                 <CardDescription>{thread.description}</CardDescription>
               </CardHeader>
               <CardContent>
-                <Button asChild variant="link" className="h-auto p-0">
+                <Button asChild variant="link" className="-ml-2 min-h-8 justify-start px-2">
                   <Link to={thread.href}>{thread.action} <ArrowRight /></Link>
                 </Button>
               </CardContent>

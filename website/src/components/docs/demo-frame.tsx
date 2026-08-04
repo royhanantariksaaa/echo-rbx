@@ -21,14 +21,14 @@ export function DemoFrame({
   const stillUrl = useBaseUrl(stillSrc)
 
   return (
-    <Card className="my-8 gap-0 overflow-hidden py-0 shadow-none">
+    <Card className="demo-frame my-8 gap-0 overflow-hidden py-0 shadow-none">
       <CardHeader className="grid gap-2 border-b bg-muted/35 px-5 py-4 sm:grid-cols-[1fr_auto] sm:items-center">
         <div>
           <CardTitle className="flex items-center gap-2 text-sm">
             <StreamlineIcon name="play" className="size-4 text-primary" />
             {title}
           </CardTitle>
-          <CardDescription className="mt-1 text-xs">{description}</CardDescription>
+          <CardDescription className="mt-1">{description}</CardDescription>
         </div>
         <Badge variant="outline" className="w-fit rounded-md">Roblox Studio</Badge>
       </CardHeader>

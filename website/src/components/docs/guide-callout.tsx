@@ -35,7 +35,7 @@ export function GuideCallout({
   const definition = variants[variant]
 
   return (
-    <Card className={cn("my-6 gap-3 border-l-4 py-4 shadow-none", definition.className)}>
+    <Card className={cn("guide-callout my-6 gap-3 border-l-4 py-4 shadow-none", definition.className)}>
       <CardHeader className="grid grid-cols-[auto_1fr] items-center gap-2 px-4">
         <StreamlineIcon name={definition.icon} className="size-4 text-primary" />
         <CardTitle className="text-sm leading-none">{title}</CardTitle>

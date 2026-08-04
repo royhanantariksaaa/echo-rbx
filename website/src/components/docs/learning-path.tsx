@@ -12,12 +12,12 @@ export type LearningPathItem = {
 
 export function LearningPath({ items }: { items: LearningPathItem[] }) {
   return (
-    <div className="my-6 grid gap-3 sm:grid-cols-2">
+    <div className="learning-path my-6 grid gap-3 sm:grid-cols-2">
       {items.map((item) => (
-        <Card key={item.href} className="group gap-2 py-0 shadow-none transition-colors hover:border-primary/70">
+        <Card key={item.href} className="learning-path__card group gap-2 py-0 shadow-none transition-colors hover:border-primary/70">
           <Link className="grid min-h-40 content-between p-5 no-underline hover:no-underline" to={item.href}>
             <CardHeader className="gap-2 p-0">
-              <span className="font-mono text-[0.7rem] font-semibold uppercase text-primary">{item.eyebrow}</span>
+              <span className="font-mono text-xs font-semibold uppercase text-primary">{item.eyebrow}</span>
               <CardTitle className="text-base text-foreground group-hover:text-primary">{item.title}</CardTitle>
             </CardHeader>
             <CardContent className="mt-5 flex items-end justify-between gap-4 p-0">

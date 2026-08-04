@@ -38,7 +38,7 @@
   --primary: oklch(0.48 0.105 174);
   --primary-foreground: oklch(0.99 0.006 170);
   --secondary: oklch(0.62 0.15 65);
-  --secondary-foreground: oklch(0.99 0.008 70);
+  --secondary-foreground: oklch(0.19 0.03 70);
   --muted: oklch(0.958 0.009 170);
   --muted-foreground: oklch(0.49 0.026 166);
   --accent: oklch(0.94 0.03 169);
@@ -304,5 +304,305 @@ html {
 @media (max-width: 996px) {
   .navbar__search-input {
     min-width: 0;
+  }
+}
+
+
+/* Keep shadcn's semantic tokens authoritative inside the Docusaurus shell. */
+html {
+  --ifm-background-color: var(--background) !important;
+  --ifm-background-surface-color: var(--card) !important;
+  --ifm-color-primary: var(--primary);
+  --ifm-font-color-base: var(--foreground);
+  --ifm-font-family-base: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --ifm-heading-font-family: var(--ifm-font-family-base);
+  --ifm-link-color: var(--primary);
+  --ifm-link-hover-color: color-mix(in oklab, var(--primary) 82%, var(--foreground));
+  --handbook-primary: var(--primary) !important;
+  --handbook-primary-strong: color-mix(in oklab, var(--primary) 82%, var(--foreground)) !important;
+  --handbook-secondary: var(--secondary) !important;
+  --handbook-on-primary: var(--primary-foreground) !important;
+  --handbook-canvas: var(--background) !important;
+  --handbook-surface: var(--card) !important;
+  --handbook-sidebar: color-mix(in oklab, var(--background) 96%, var(--muted)) !important;
+  --handbook-footer: var(--background) !important;
+  --handbook-ink: var(--foreground) !important;
+  --handbook-copy: color-mix(in oklab, var(--foreground) 88%, var(--muted-foreground)) !important;
+  --handbook-muted: var(--muted-foreground) !important;
+  --handbook-border: var(--border) !important;
+  --handbook-border-strong: color-mix(in oklab, var(--border) 76%, var(--foreground)) !important;
+  --handbook-tint: var(--accent) !important;
+  --handbook-code-border: var(--border) !important;
+  --handbook-code-highlight: var(--muted) !important;
+  --handbook-code-inline: var(--secondary) !important;
+  --handbook-shadow: color-mix(in oklab, var(--foreground) 18%, transparent) !important;
+  --handbook-heading: var(--ifm-font-family-base) !important;
+}
+
+body,
+button,
+input,
+select,
+textarea,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--ifm-font-family-base);
+}
+
+.navbar__search-input {
+  color: var(--foreground);
+  opacity: 1;
+}
+
+.navbar__search-input::placeholder {
+  color: var(--muted-foreground);
+  opacity: 1;
+}
+
+.navbar__search-input:disabled {
+  color: var(--muted-foreground);
+  opacity: 0.82;
+}
+
+.theme-doc-sidebar-menu > .theme-doc-sidebar-item-link {
+  margin-top: 0.125rem;
+}
+
+.theme-doc-sidebar-menu > .theme-doc-sidebar-item-category {
+  margin-top: 1.25rem;
+}
+
+.theme-doc-sidebar-menu > .theme-doc-sidebar-item-category:first-child {
+  margin-top: 0;
+}
+
+.theme-doc-sidebar-menu > .menu__list-item > .menu__link {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  font-weight: 560;
+  text-transform: none;
+}
+
+.theme-doc-sidebar-item-category > .menu__list-item-collapsible > .menu__link {
+  color: var(--foreground);
+  font-size: 0.75rem;
+  font-weight: 720;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.menu__link {
+  align-items: center;
+  display: flex;
+}
+
+.theme-doc-toc-desktop::before {
+  font-size: 0.8125rem;
+}
+
+.table-of-contents__link {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  padding: 0.2rem 0;
+}
+
+article h1:not(.lesson-header__title):not(.library-home__title),
+.theme-doc-markdown h1:not(.lesson-header__title):not(.library-home__title) {
+  color: var(--foreground);
+  font-family: var(--ifm-font-family-base);
+  font-size: 2rem !important;
+  font-weight: 740;
+  line-height: 1.2 !important;
+}
+
+article h2,
+.theme-doc-markdown h2 {
+  font-family: var(--ifm-font-family-base);
+  font-size: 1.625rem;
+  line-height: 1.3;
+}
+
+article h3,
+.theme-doc-markdown h3 {
+  font-family: var(--ifm-font-family-base);
+  font-size: 1.2rem;
+  line-height: 1.4;
+}
+
+[data-slot="button"] {
+  border-radius: var(--radius);
+  font-family: var(--ifm-font-family-base);
+  font-weight: 650;
+  text-decoration: none !important;
+}
+
+[data-slot="button"][data-variant="default"] {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground) !important;
+}
+
+[data-slot="button"][data-variant="default"]:hover {
+  background: color-mix(in oklab, var(--primary) 90%, var(--foreground));
+  color: var(--primary-foreground) !important;
+}
+
+[data-slot="button"][data-variant="outline"] {
+  background: var(--background);
+  border-color: var(--border);
+  color: var(--foreground) !important;
+}
+
+[data-slot="button"][data-variant="outline"]:hover,
+[data-slot="button"][data-variant="ghost"]:hover {
+  background: var(--accent);
+  color: var(--accent-foreground) !important;
+}
+
+[data-slot="button"][data-variant="secondary"] {
+  background: var(--secondary);
+  color: var(--secondary-foreground) !important;
+}
+
+[data-slot="button"][data-variant="link"] {
+  color: var(--primary) !important;
+  min-height: 2rem;
+}
+
+[data-slot="button"][data-variant="link"]:hover {
+  color: color-mix(in oklab, var(--primary) 82%, var(--foreground)) !important;
+}
+
+[data-slot="button"]:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 45%, transparent);
+}
+
+[data-slot="badge"] {
+  border-radius: calc(var(--radius) - 2px);
+  font-size: 0.75rem !important;
+  line-height: 1.25rem;
+}
+
+[data-slot="badge"][data-variant="default"] {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+[data-slot="badge"][data-variant="secondary"] {
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+}
+
+[data-slot="badge"][data-variant="outline"] {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--foreground);
+}
+
+[data-slot="card"] {
+  background: var(--card);
+  border-color: var(--border);
+  border-radius: var(--radius);
+  color: var(--card-foreground);
+}
+
+[data-slot="card-title"] {
+  color: var(--card-foreground);
+}
+
+[data-slot="card-description"] {
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.library-home__title {
+  color: var(--foreground);
+  font-family: var(--ifm-font-family-base);
+  font-size: 2.5rem !important;
+  line-height: 1.1 !important;
+}
+
+.library-home__strapline {
+  color: var(--foreground);
+}
+
+.library-home__introduction,
+.lesson-header__summary {
+  color: var(--muted-foreground);
+}
+
+article .lesson-header__title,
+.theme-doc-markdown .lesson-header__title {
+  color: var(--foreground);
+  font-family: var(--ifm-font-family-base);
+  font-size: 2.5rem !important;
+  line-height: 1.12 !important;
+}
+
+.guide-callout [data-slot="card-content"] p,
+.learning-path [data-slot="card-content"] p {
+  color: var(--muted-foreground);
+}
+
+.footer__title {
+  font-size: 0.8125rem;
+}
+
+.footer__link-item,
+.footer__copyright {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+
+html[data-theme="light"] article div[class*="memberString_"] code,
+html[data-theme="light"] article :not(pre) > code {
+  color: #92400e;
+}
+
+html[data-theme="light"] article code[class*="blue_"] {
+  color: #1d4ed8 !important;
+}
+
+html[data-theme="light"] article code[class*="green_"] {
+  color: #047857 !important;
+}
+
+html[data-theme="light"] article code[class*="purple_"] {
+  color: #7e22ce !important;
+}
+
+html[data-theme="light"] article span[class*="inlineDescription_"],
+html[data-theme="light"] article span[class*="inlineDescription_"] * {
+  color: var(--muted-foreground) !important;
+}
+
+.theme-doc-markdown th code {
+  font-size: 0.75rem;
+}
+
+.theme-code-block .token.comment,
+.theme-code-block .token.prolog,
+.theme-code-block .token.doctype,
+.theme-code-block .token.cdata {
+  color: #a1a8c9 !important;
+}
+
+@media (min-width: 640px) {
+  .library-home__title {
+    font-size: 2.5rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  article .lesson-header__title,
+  .theme-doc-markdown .lesson-header__title {
+    font-size: 2.1rem !important;
   }
 }
