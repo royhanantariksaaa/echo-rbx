@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkecho_documentation||=[]).push([[330],{30046(e){e.exports=JSON.parse('[{"value":"Functions","id":"functions","level":2},{"value":".new","id":"new","level":3}]')}}]);
